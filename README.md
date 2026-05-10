@@ -40,3 +40,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 npx create-next-app@latest
 --- mongodb setup ---
 npm i mongoose
+// define th e db connections
+
+// write models for db
+npm i bcryptjs ( fro passsword hashing)
