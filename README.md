@@ -44,3 +44,9 @@ npm i mongoose
 
 // write models for db
 npm i bcryptjs ( fro passsword hashing)
+
+// write the registration  route  and test it
+
+ -- auntentication next auth
+ next auth
+ npm install next-auth
