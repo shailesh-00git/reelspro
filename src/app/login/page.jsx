@@ -1,24 +1,27 @@
 "use client";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 const LoginPage = () => {
-  // const router = useRouter();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
 
-    if (!email || !password) {
-      toast.error("All fields are required");
-      return;
-    }
-
-    try {
-    } catch (error) {
-      toast.error("Something went wrong");
+    if (result?.error) {
+      toast.error(result.error);
+    } else {
+      toast.success("Login successful!");
+      router.push("/");
     }
   }
   return (
