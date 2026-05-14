@@ -1,5 +1,5 @@
-import { connectDB } from "@/lib/db";
-import User from "@/models/User";
+import { connectDB } from "../.././../../lib/db";
+import User from "../../../../models/User";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -11,7 +11,7 @@ export async function POST(request) {
     if (!email || !password) {
       return NextResponse.json(
         { error: "Email and password are required" },
-        { status: 400 },
+        { status: 401 },
       );
     }
 

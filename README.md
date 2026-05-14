@@ -50,3 +50,8 @@ npm i bcryptjs ( fro passsword hashing)
  -- auntentication next auth
  next auth
  npm install next-auth
+
+
+ <!-- imagekit integration -->
+ npm i @imagekit/nodejs
+ npm install @imagekit/next
