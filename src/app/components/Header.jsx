@@ -19,18 +19,44 @@ function Header() {
     }
   }
   return (
-    <div className="w-full p-4 space-x-4">
-      {data?.user ? (
-        <div className="space-x-5">
-          <button onClick={handleSignout}>signout </button>
-          <Link href={"/upload"}>upload video</Link>
-        </div>
-      ) : (
-        <div className="space-x-5">
-          <Link href={"/login"}>Login</Link>
-          <Link href={"/register"}>register</Link>
-        </div>
-      )}
+    <div className="w-full py-4 px-8 space-x-4 items-center  flex justify-between bg-gray-100">
+      <h1 className="font-bold text-2xl">
+        Reels<span className="text-blue-500">Pro</span>
+      </h1>
+      <div className="px-5">
+        {" "}
+        {data?.user ? (
+          <div className="space-x-5">
+            <button
+              onClick={handleSignout}
+              className="border-2 border-red-500 text-red-500 px-3 py-1 rounded"
+            >
+              signout{" "}
+            </button>
+            <Link
+              href={"/upload"}
+              className="bg-blue-500 text-white px-3 py-2 rounded"
+            >
+              upload video
+            </Link>
+          </div>
+        ) : (
+          <div className="space-x-5">
+            <Link
+              href={"/login"}
+              className="border-2 border-blue-500 text-blue-500 px-3 py-2 rounded"
+            >
+              Login
+            </Link>
+            <Link
+              href={"/register"}
+              className="bg-blue-500 text-white px-3 py-2 rounded"
+            >
+              register
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
