@@ -1,18 +1,48 @@
-export async function apiClient(endpoint, method, body) {
-  try {
-    const res = await fetch(endpoint, {
-      method: method,
-      headers: { "Content-Type": "application/json" },
+class ApiClient {
+  async fetch(endpoint, options = {}) {
+    const { method = "GET", body, headers = {} } = options;
+
+    const defaultHeaders = {
+      "Content-Type": "application/json",
+      ...headers,
+    };
+
+    const response = await fetch(`/api${endpoint}`, {
+      method,
+      headers: defaultHeaders,
       body: body ? JSON.stringify(body) : undefined,
     });
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || "Something went wrong");
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText);
     }
-    return await res.json();
-  } catch (error) {
-    throw error;
+
+    return response.json();
+  }
+
+  // GET all videos
+  getVideos() {
+    return this.fetch("/videos");
+  }
+
+  // GET single video
+  getVideo(id) {
+    return this.fetch(`/videos/${id}`);
+  }
+
+  // CREATE video
+  createVideo(videoData) {
+    return this.fetch("/videos", {
+      method: "POST",
+      body: videoData,
+    });
+  }
+
+  // get total videos uploaded by a user
+  getUserVideoCount() {
+    return this.fetch("/video/user");
   }
 }
 
-export default apiClient;
+export const apiClient = new ApiClient();

@@ -1,7 +1,8 @@
 "use client";
 
-import apiClient from "../lib/apiClient";
+import {apiClient} from "../lib/apiClient";
 import { useEffect, useState } from "react";
+import LeftSidebar from "./components/LeftSidebar";
 
 export default function Home() {
   const [videos, setVideos] = useState([]);
@@ -10,16 +11,13 @@ export default function Home() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const res = await apiClient("/api/videos", "GET");
+        const data = await apiClient.getVideos();
 
-        // handle both possible API shapes
-        const list = Array.isArray(res) ? res : res?.data || [];
-
-        setVideos(list);
+        setVideos(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching videos:", error);
       } finally {
-        setLoading(false);
+        setLoading(false); // ✅ FIXED
       }
     };
 
@@ -27,40 +25,44 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="h-screen grid place-content-center">
-        Loading videos...
-      </div>
-    );
+    return <div className="h-screen grid place-content-center">Loading...</div>;
   }
 
   return (
-    <div className=" w-7xl mx-auto border text-white p-4">
-      <h1 className="text-xl font-bold mb-6">Home Page</h1>
+    <div className="h-screen grid grid-cols-4 overflow-hidden border border-gray-300">
+      {/* LEFT SIDEBAR */}
+      <div className="col-span-1 border-r border-gray-300 overflow-y-auto">
+        <LeftSidebar />
+      </div>
 
-      {videos.length === 0 ? (
-        <p className="text-gray-400">No videos found</p>
-      ) : (
-        <div className="grid gap-2 grid grid-cols-4">
-          {videos.map((video) => (
-            <div
-              key={video._id}
-              className="border border-gray-500 rounded-xl overflow-hidden"
-            >
-              <video
-                src={video.videoUrl}
-                controls
-                className="w-full h-100 object-cover"
-              />
+      {/* MAIN CONTENT */}
+      <div className="col-span-3 overflow-y-auto p-4">
+        <div className="grid grid-cols-3 gap-4">
+          {videos.length === 0 ? (
+            <p className="text-gray-400">No videos found</p>
+          ) : (
+            videos.map((video) => (
+              <div
+                key={video._id}
+                className="border rounded-xl overflow-hidden bg-white"
+              >
+                <video
+                  src={video.videoUrl}
+                  controls
+                  className="w-full h-64 object-cover bg-black"
+                />
 
-              <div className="p-3">
-                <h2 className="font-bold text-black">{video.title}</h2>
-                <p className="text-sm text-black">{video.description}</p>
+                <div className="p-2">
+                  <h2 className="font-bold text-black text-sm">
+                    {video.title}
+                  </h2>
+                  <p className="text-xs text-gray-600">{video.description}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

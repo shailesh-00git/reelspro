@@ -4,10 +4,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 
 function Header() {
-  const { data, status } = useSession();
-  // console.log(data?.user); // user is inside data
-  // console.log(status); // user is inside data
-  // console.log("session data", data);
+  const { data } = useSession();
 
   // handle signout
   async function handleSignout() {
@@ -19,7 +16,7 @@ function Header() {
     }
   }
   return (
-    <div className="w-full py-4 px-8 space-x-4 items-center  flex justify-between bg-gray-100">
+    <div className=" py-4 px-8 space-x-4 items-center  flex justify-between bg-gray-100">
       <h1 className="font-bold text-2xl">
         Reels<span className="text-blue-500">Pro</span>
       </h1>

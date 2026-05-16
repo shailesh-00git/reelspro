@@ -25,11 +25,15 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="h-full overflow-hidden flex flex-col">
         <Providers>
-          <Toaster position="top-center"></Toaster>
-           <Header />
-          {children}
+          <Toaster position="top-center" />
+
+          {/* HEADER (fixed height) */}
+          <Header />
+
+          {/* MAIN AREA (fills remaining space) */}
+          <main className="flex-1 overflow-hidden w-7xl mx-auto">{children}</main>
         </Providers>
       </body>
     </html>
