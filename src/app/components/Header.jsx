@@ -21,8 +21,9 @@ function Header() {
   return (
     <div className="w-full p-4 space-x-4">
       {data?.user ? (
-        <div>
+        <div className="space-x-5">
           <button onClick={handleSignout}>signout </button>
+          <Link href={"/upload"}>upload video</Link>
         </div>
       ) : (
         <div className="space-x-5">

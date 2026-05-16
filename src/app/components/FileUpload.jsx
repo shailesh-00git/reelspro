@@ -1,4 +1,4 @@
-"use client"; // This component must be a client component
+"use client";
 
 import {
   ImageKitAbortError,
@@ -9,102 +9,91 @@ import {
 } from "@imagekit/next";
 import { useRef, useState } from "react";
 
-const FileUpload = () => {
+export default function FileUpload({ onSuccess, onProgress }) {
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef(null);
   const abortController = new AbortController();
 
   const authenticator = async () => {
-    try {
-      const response = await fetch("/api/imagekit-auth");
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Request failed with status ${response.status}: ${errorText}`,
-        );
-      }
+    const response = await fetch("/api/imagekit-auth");
 
-      const data = await response.json();
-      console.log("data", data);
-
-      const { signature, expire, token, publicKey } = data;
-      return { signature, expire, token, publicKey };
-    } catch (error) {
-      console.error("Authentication error:", error);
-      throw new Error("Authentication request failed");
+    if (!response.ok) {
+      throw new Error("Auth failed");
     }
+
+    const data = await response.json();
+    return data; // { signature, expire, token, publicKey }
   };
 
   const handleUpload = async () => {
-    // Access the file input element using the ref
-    const fileInput = fileInputRef.current;
-    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-      alert("Please select a file to upload");
+    const file = fileInputRef.current?.files?.[0];
+
+    if (!file) {
+      alert("Please select a file");
       return;
     }
 
-    // Extract the first file from the file input
-    const file = fileInput.files[0];
-
-    // Retrieve authentication parameters for the upload.
     let authParams;
     try {
       authParams = await authenticator();
-    } catch (authError) {
-      console.error("Failed to authenticate for upload:", authError);
+    } catch (err) {
+      console.error("Auth error:", err);
       return;
     }
- 
+
     const { signature, expire, token, publicKey } = authParams;
 
-    // Call the ImageKit SDK upload function with the required parameters and callbacks.
     try {
-      const uploadResponse = await upload({
-        // Authentication parameters
+      const res = await upload({
+        file,
+        fileName: file.name,
+        signature,
         expire,
         token,
-        signature,
         publicKey,
-        file,
-        fileName: file.name, // Optionally set a custom file name
-        // Progress callback to update upload progress state
-        onProgress: (event) => {
-          setProgress((event.loaded / event.total) * 100);
+
+        onProgress: (e) => {
+          const percent = (e.loaded / e.total) * 100;
+          setProgress(percent);
+
+          // 🔥 send to parent
+          if (onProgress) onProgress(percent);
         },
-        // Abort signal to allow cancellation of the upload if needed.
+
         abortSignal: abortController.signal,
       });
-      console.log("Upload response:", uploadResponse);
+
+      console.log("Upload success:", res);
+
+      // 🔥 SEND URL TO PARENT (CRITICAL FIX)
+      if (onSuccess) {
+        onSuccess(res.url);
+      }
     } catch (error) {
-      // Handle specific error types provided by the ImageKit SDK.
       if (error instanceof ImageKitAbortError) {
-        console.error("Upload aborted:", error.reason);
+        console.error("Aborted");
       } else if (error instanceof ImageKitInvalidRequestError) {
-        console.error("Invalid request:", error.message);
+        console.error("Invalid request");
       } else if (error instanceof ImageKitUploadNetworkError) {
-        console.error("Network error:", error.message);
+        console.error("Network error");
       } else if (error instanceof ImageKitServerError) {
-        console.error("Server error:", error.message);
+        console.error("Server error");
       } else {
-        // Handle any other errors that may occur.
-        console.error("Upload error:", error);
+        console.error("Unknown error:", error);
       }
     }
   };
 
   return (
-    <>
-      {/* File input element using React ref */}
+    <div>
       <input type="file" ref={fileInputRef} />
-      {/* Button to trigger the upload process */}
       <button type="button" onClick={handleUpload}>
         Upload file
       </button>
-      <br />
-      {/* Display the current upload progress */}
-      Upload progress: <progress value={progress} max={100}></progress>
-    </>
-  );
-};
 
-export default FileUpload;
+      <div style={{ marginTop: 10 }}>
+        Upload progress: {Math.round(progress)}%
+      </div>
+    </div>
+  );
+}
