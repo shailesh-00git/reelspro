@@ -38,11 +38,6 @@ class ApiClient {
       body: videoData,
     });
   }
-
-  // get total videos uploaded by a user
-  getUserVideoCount() {
-    return this.fetch("/video/user");
-  }
 }
 
 export const apiClient = new ApiClient();

@@ -25,7 +25,7 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return <div className="h-screen grid place-content-center">Loading...</div>;
+    return <div className="h-screen text-2xl grid place-content-center">Loading...</div>;
   }
 
   return (

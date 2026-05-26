@@ -5,11 +5,14 @@ import { useForm } from "react-hook-form";
 import { Loader2, Upload, Film } from "lucide-react";
 import FileUpload from "./FileUpload";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function VideoUploadForm() {
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
+
+  const router = useRouter();
 
   const {
     register,
@@ -38,6 +41,7 @@ export default function VideoUploadForm() {
       if (!res.ok) throw new Error();
 
       toast.success("Video published!");
+      router.push("/");
     } catch (err) {
       console.error(err);
       toast.error("Publish failed");
@@ -47,11 +51,11 @@ export default function VideoUploadForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-xl bg-gray-200 rounded-2xl shadow-2xl p-8">
+    <div className=" flex items-center justify-center p-6">
+      <div className="w-full max-w-xl  rounded border  p-8">
         <div className="flex items-center gap-3 mb-6">
           <Film className="w-5 h-5" />
-          <h1 className="text-xl font-bold">Upload Reel</h1>
+          <h1 className="text-xl font-bold">Upload Reel </h1>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -79,18 +83,13 @@ export default function VideoUploadForm() {
             onProgress={setUploadProgress}
           />
 
-          {/* Progress */}
-          {uploadProgress > 0 && (
-            <p>Uploading: {Math.round(uploadProgress)}%</p>
-          )}
-
           {/* Success */}
           {videoUrl && <p className="text-green-600">Video uploaded ✓</p>}
 
           {/* Submit */}
           <button
             disabled={loading || !videoUrl}
-            className="w-full bg-rose-500 text-white p-3 rounded"
+            className="w-full bg-blue-500 text-white p-3 rounded"
           >
             {loading ? (
               <span className="flex items-center gap-2">

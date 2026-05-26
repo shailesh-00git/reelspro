@@ -17,9 +17,12 @@ function Header() {
   }
   return (
     <div className=" py-4 px-8 space-x-4 items-center  flex justify-between bg-gray-100">
-      <h1 className="font-bold text-2xl">
-        Reels<span className="text-blue-500">Pro</span>
-      </h1>
+      <Link href={"/"}>
+        <h1 className="font-bold text-2xl">
+          Reels<span className="text-blue-500">Pro</span>
+        </h1>{" "}
+      </Link>
+
       <div className="px-5">
         {" "}
         {data?.user ? (

@@ -85,9 +85,9 @@ export default function FileUpload({ onSuccess, onProgress }) {
   };
 
   return (
-    <div>
-      <input type="file" ref={fileInputRef} />
-      <button type="button" onClick={handleUpload}>
+    <div className="flex flex-col space-y-1">
+      <input type="file" ref={fileInputRef} className="bg-blue-50 p-1" />
+      <button type="button" onClick={handleUpload} className="border w-24  mt-3  rounded px-2">
         Upload file
       </button>
 
